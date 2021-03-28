@@ -8,17 +8,19 @@ html, body {
 body {
     display: grid;
     place-items: center;
+    font-family: 'Lucida Sans', Verdana, sans-serif;
 }
 
 #calculator {
     border: 2px solid #000000;
-    font-size: 48px;
+    border-radius: 2%;
+    font-size: 40px;
     display: grid;
-    grid-template: 1fr 60% 1fr / 2fr 1fr;
+    grid-template: 1.6fr 5fr 1fr / 2fr 1fr;
     gap: 2%;
-    width: 60%;
-    height: 80%;
-    padding: 2%;
+    width: min(66%, 500px);
+    height: 83%;
+    padding: min(4%, 20px);
 }
 
 /* BUTTONS */
@@ -28,8 +30,10 @@ body {
 }
 
 #display {
+    background-color: #EEE;
     text-align: right;
     grid-column: 1 / -1;
+    padding: 4%;
 }
 
 .digits {
@@ -53,4 +57,8 @@ body {
 
 .digit:last-child {
     grid-column: 2 / span 1;
+}
+
+button:hover {
+    cursor: pointer;
 }
