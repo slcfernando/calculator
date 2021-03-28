@@ -55,10 +55,6 @@ body {
     gap: 2%;
 }
 
-.digit:last-child {
-    grid-column: 2 / span 1;
-}
-
 button:hover {
     cursor: pointer;
 }

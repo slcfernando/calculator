@@ -2,6 +2,11 @@
 
 const display = document.querySelector("#display");
 const digitButtons = document.querySelectorAll(".digit");
+const decimalPointButton = document.querySelector(".point");
+const negativeButton = document.querySelector(".negative");
+const numberButtons = Array.from(digitButtons);
+numberButtons.push(negativeButton);
+numberButtons.push(decimalPointButton);
 const operatorButtons = document.querySelectorAll(".operator");
 const clearButton = document.querySelector(".clear");
 const deleteButton = document.querySelector(".delete");
@@ -25,20 +30,44 @@ digitButtons.forEach(button => {
         lastClicked = e.target;
     });
 });
+decimalPointButton.addEventListener("click", (e) => {
+    if (display.textContent &&
+        !display.textContent.includes(".") &&
+        display.textContent != "-") {
+        updateDisplay(display.textContent + ".");
+    }
+});
+negativeButton.addEventListener("click", (e) => {
+    if (lastClicked) {
+        if (lastClicked.className == "operator") {
+            updateDisplay("");
+        } else if (lastClicked.className == "equals") {
+            clear();
+        }
+    }
+    if (display.textContent.includes("-")) {
+        updateDisplay(display.textContent.slice(1));
+    } else {
+        updateDisplay("-" + display.textContent);
+    }
+    lastClicked = e.target;
+});
 operatorButtons.forEach(button => {
     button.addEventListener("click", (e) => {
         // In case the user is chaining calculators
-        if (currentOperator && currentOperand && lastClicked.className == "digit") {
+        if (currentOperator && currentOperand && (numberButtons.indexOf(lastClicked) != -1) && display.textContent != "-") {
             result = operate(currentOperand, display.textContent, currentOperator);
             updateDisplay(result);
         }
-        currentOperator = button.textContent;
-        currentOperand = display.textContent;
+        if (display.textContent != "-") {
+            currentOperator = button.textContent;
+            currentOperand = display.textContent;
+        }
         lastClicked = e.target;
     });
 });
 equalsButton.addEventListener("click", (e) => {
-    if (currentOperand && lastClicked.className == "digit") {
+    if (currentOperand && (numberButtons.indexOf(lastClicked) != -1)) {
         // In case the user divides by zero
         result = operate(currentOperand, display.textContent, currentOperator);
         if (!Number.isFinite(result)) {
@@ -81,7 +110,7 @@ function operate(a, b, operator) {
         case "-":
             return subtract(a, b);
         case "*":
-            return multiply(a, b);
+            return +(multiply(a, b).toFixed(4));
         case "/":
             return +(divide(a, b).toFixed(4));
     }
