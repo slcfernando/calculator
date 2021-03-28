@@ -23,10 +23,12 @@ digitButtons.forEach(button => {
             if (lastClicked.className == "operator") {
                 updateDisplay("");
             } else if (lastClicked.className == "equals") {
-                clear();
+                currentOperator = null;
             }
         }
-        updateDisplay(display.textContent + button.textContent);
+        if (button.textContent != "0" || display.textContent) {
+            updateDisplay(display.textContent + button.textContent);
+        }
         lastClicked = e.target;
     });
 });
@@ -36,13 +38,15 @@ decimalPointButton.addEventListener("click", (e) => {
         display.textContent != "-") {
         updateDisplay(display.textContent + ".");
     }
+    currentOperator = null;
+    lastClicked = e.target;
 });
 negativeButton.addEventListener("click", (e) => {
     if (lastClicked) {
         if (lastClicked.className == "operator") {
             updateDisplay("");
-        } else if (lastClicked.className == "equals") {
-            clear();
+        }  else if (lastClicked.className == "equals") {
+            currentOperator = null;
         }
     }
     if (display.textContent.includes("-")) {
@@ -67,7 +71,7 @@ operatorButtons.forEach(button => {
     });
 });
 equalsButton.addEventListener("click", (e) => {
-    if (currentOperand && (numberButtons.indexOf(lastClicked) != -1)) {
+    if (currentOperand && currentOperator && (numberButtons.indexOf(lastClicked) != -1)) {
         // In case the user divides by zero
         result = operate(currentOperand, display.textContent, currentOperator);
         if (!Number.isFinite(result)) {
@@ -83,6 +87,12 @@ clearButton.addEventListener("click", (e) => {
     clear();
     lastClicked = e.target;
 });
+deleteButton.addEventListener("click", (e) => {
+    updateDisplay(display.textContent.slice(0, -1));
+    if (!display.textContent) clear();
+    currentOperator = null;
+    lastClicked = e.target;
+})
 
 function add(a, b) {
     return a + b;
