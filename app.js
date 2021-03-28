@@ -11,6 +11,28 @@ const operatorButtons = document.querySelectorAll(".operator");
 const clearButton = document.querySelector(".clear");
 const deleteButton = document.querySelector(".delete");
 const equalsButton = document.querySelector(".equals");
+const keyNames = {
+    "0": document.querySelector(".zero"),
+    "1": document.querySelector(".one"),
+    "2": document.querySelector(".two"),
+    "3": document.querySelector(".three"),
+    "4": document.querySelector(".four"),
+    "5": document.querySelector(".five"),
+    "6": document.querySelector(".six"),
+    "7": document.querySelector(".seven"),
+    "8": document.querySelector(".eight"),
+    "9": document.querySelector(".nine"),
+    "+": document.querySelector(".plus"),
+    "-": document.querySelector(".minus"),
+    "*": document.querySelector(".times"),
+    "/": document.querySelector(".divide"),
+    ".": document.querySelector(".point"),
+    "n": document.querySelector(".negative"),
+    "c": document.querySelector(".clear"),
+    "Delete": document.querySelector(".delete"),
+    "Enter": document.querySelector(".equals"),
+    "=": document.querySelector(".equals"),
+};
 
 let result;
 let currentOperand;
@@ -20,32 +42,37 @@ let lastClicked;
 digitButtons.forEach(button => {
     button.addEventListener("click", (e) => {
         if (lastClicked) {
-            if (lastClicked.className == "operator") {
+            if (lastClicked.className.includes("operator")) {
                 updateDisplay("");
-            } else if (lastClicked.className == "equals") {
+            } else if (lastClicked.className.includes("equals")) {
                 currentOperator = null;
             }
         }
-        if (button.textContent != "0" || display.textContent) {
-            updateDisplay(display.textContent + button.textContent);
+        if (display.textContent == "0") {
+            updateDisplay(display.textContent.slice(1));
         }
+        updateDisplay(display.textContent + button.textContent);
         lastClicked = e.target;
     });
 });
+
 decimalPointButton.addEventListener("click", (e) => {
     if (display.textContent &&
         !display.textContent.includes(".") &&
-        display.textContent != "-") {
+        display.textContent != "-" && 
+        !lastClicked.className.includes("equals")) {
         updateDisplay(display.textContent + ".");
+    } else {
+        currentOperator = null;
     }
-    currentOperator = null;
     lastClicked = e.target;
 });
+
 negativeButton.addEventListener("click", (e) => {
     if (lastClicked) {
-        if (lastClicked.className == "operator") {
+        if (lastClicked.className.includes("operator")) {
             updateDisplay("");
-        }  else if (lastClicked.className == "equals") {
+        }  else if (lastClicked.className.includes("equals")) {
             currentOperator = null;
         }
     }
@@ -56,10 +83,14 @@ negativeButton.addEventListener("click", (e) => {
     }
     lastClicked = e.target;
 });
+
 operatorButtons.forEach(button => {
     button.addEventListener("click", (e) => {
         // In case the user is chaining calculators
-        if (currentOperator && currentOperand && (numberButtons.indexOf(lastClicked) != -1) && display.textContent != "-") {
+        if (currentOperator && 
+            currentOperand && 
+            (numberButtons.indexOf(lastClicked) != -1) && 
+            display.textContent != "-") {
             result = operate(currentOperand, display.textContent, currentOperator);
             updateDisplay(result);
         }
@@ -70,10 +101,14 @@ operatorButtons.forEach(button => {
         lastClicked = e.target;
     });
 });
+
 equalsButton.addEventListener("click", (e) => {
-    if (currentOperand && currentOperator && (numberButtons.indexOf(lastClicked) != -1)) {
-        // In case the user divides by zero
+    if (currentOperand && 
+        currentOperator && 
+        (numberButtons.indexOf(lastClicked) != -1)) {
         result = operate(currentOperand, display.textContent, currentOperator);
+
+        // In case the user divides by zero
         if (!Number.isFinite(result)) {
             alert("Luh don't do that!");
             clear();
@@ -83,15 +118,21 @@ equalsButton.addEventListener("click", (e) => {
     }
     lastClicked = e.target;
 });
+
 clearButton.addEventListener("click", (e) => {
     clear();
     lastClicked = e.target;
 });
+
 deleteButton.addEventListener("click", (e) => {
     updateDisplay(display.textContent.slice(0, -1));
     if (!display.textContent) clear();
     currentOperator = null;
     lastClicked = e.target;
+})
+
+document.addEventListener("keypress", (e) => {
+    if (e.key in keyNames) keyNames[e.key].click();
 })
 
 function add(a, b) {

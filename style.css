@@ -31,7 +31,8 @@ button {
     border: 1px solid #252323;
 }
 
-button:hover {
+button:hover,
+button:active {
     background-color: #F9FEF6;
 }
 
@@ -44,7 +45,8 @@ button:hover {
     background-color: #D86D6D;
 }
 
-.operator:hover {
+.operator:hover,
+.operator:active {
     background-color: #F89B9B;
 }
 
