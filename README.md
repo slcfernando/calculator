@@ -1,1 +1,1 @@
-A calculator implementation. Made for [The Odin Project](https://www.theodinproject.com/).
+A calculator implementation.
